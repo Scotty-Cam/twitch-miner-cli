@@ -1,0 +1,70 @@
+[package]
+name = "twitch_miner_cli"
+version = "1.0.0"
+edition = "2021"
+description = "A terminal-based Twitch drops miner"
+repository = "https://github.com/Scotty-Cam/twitch-miner-cli"
+license = "MIT"
+readme = "README.md"
+
+[features]
+default = []
+# Enable GQL debug file output (writes request/response JSON to disk)
+debug-gql = []
+
+[dependencies]
+# Async runtime - only features we actually use
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "time", "sync", "fs", "signal"] }
+
+# HTTP client - minimal features for smaller binary
+reqwest = { version = "0.12", default-features = false, features = [
+    "json",           # JSON parsing
+    "rustls-tls",     # TLS via rustls (smaller than native-tls)
+    "socks",          # SOCKS5 proxy support
+    "gzip",           # Response compression
+] }
+
+
+# WebSocket
+tokio-tungstenite = { version = "0.24", features = ["rustls-tls-native-roots"] }
+futures-util = "0.3"
+
+# Serialization
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+# TUI
+ratatui = "0.29"
+crossterm = { version = "0.28", features = ["event-stream"] }
+
+# Utilities
+chrono = { version = "0.4", default-features = false, features = ["std", "serde", "clock"] }
+base64 = "0.22"
+regex-lite = "0.1"  # Lighter alternative to regex
+url = "2"
+thiserror = "2"
+anyhow = "1"
+tracing = "0.1"
+tracing-subscriber = "0.3"
+notify-rust = "4"
+
+[dev-dependencies]
+tokio-test = "0.4"
+
+# =============================================================================
+# Release Profile - Optimized for size and performance
+# =============================================================================
+[profile.release]
+lto = true              # Link-time optimization (full)
+codegen-units = 1       # Single codegen unit for better optimization
+panic = "abort"         # Remove panic unwinding code
+strip = true            # Strip symbols from binary
+opt-level = "z"         # Optimize for size
+debug = false           # No debug info
+debug-assertions = false # Disable debug assertions
+overflow-checks = false  # Skip overflow checks for speed
+incremental = false      # Disable for reproducible builds
+
+# Apply size optimization to all dependencies
+[profile.release.package."*"]
+opt-level = "z"

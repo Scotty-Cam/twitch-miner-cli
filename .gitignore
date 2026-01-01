@@ -1,0 +1,47 @@
+# Rust
+/target
+Cargo.lock
+
+# Python (legacy)
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment variables
+.env
+.env.local
+
+# Logs
+*.log
+
+# Excluded folders (development only)
+Docs/
+external_repos/
+
+# Debug output files
+*_debug.txt
+debug_*.json
+gql_debug_*.json
+check_output*.txt
+twitch_miner_debug_log*.txt
+
+# User data (sensitive - never commit)
+auth.json
+settings.json
+cookies.jar
