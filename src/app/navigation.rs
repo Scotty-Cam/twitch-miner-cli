@@ -497,9 +497,11 @@ impl NavigationOps for App {
             // Use CampaignOps method
             let message = self.toggle_game_subscription(name.clone());
 
-            // Check if we unsubscribed
-            if !self.config.priority_games.contains(&name) {
-                // Unsubscribed
+            // Check if we subscribed (game is now in priority list) or unsubscribed
+            let is_subscribe = self.config.priority_games.contains(&name);
+
+            if !is_subscribe {
+                // Unsubscribed - check if we need to stop watching
                 let active_game = self
                     .mining_status
                     .as_ref()
@@ -517,7 +519,7 @@ impl NavigationOps for App {
                 }
             }
 
-            Ok((message, true))
+            Ok((message, is_subscribe))
         } else {
             Ok(("No game selected".to_string(), false))
         }

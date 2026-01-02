@@ -1,6 +1,6 @@
 [package]
 name = "twitch_miner_cli"
-version = "1.0.0"
+version = "1.0.1"
 edition = "2021"
 description = "A terminal-based Twitch drops miner"
 repository = "https://github.com/Scotty-Cam/twitch-miner-cli"

@@ -117,7 +117,10 @@ async fn run_app() -> anyhow::Result<()> {
                     match app.try_autostart().await {
                         Ok(msg) => logs.push(format!("▶ {}", msg)),
                         Err(_) => {
-                            // Only update log if it's different from the last message
+                            // Log waiting message if the last message isn't already "Waiting for stream..."
+                            if logs.last().map(|s| s.as_str()) != Some("Waiting for stream...") {
+                                logs.push("Waiting for stream...".to_string());
+                            }
                         }
                     }
                 }
@@ -225,6 +228,10 @@ async fn run_app() -> anyhow::Result<()> {
                                     app.change_state(AppState::Watching);
                                 } else {
                                     app.change_state(AppState::Idle);
+                                    // Log waiting message after initial load if not watching
+                                    if !has_done_first_refresh {
+                                        logs.push("Waiting for stream...".to_string());
+                                    }
                                 }
                             }
                             Err(e) => {
@@ -466,9 +473,9 @@ async fn run_app() -> anyhow::Result<()> {
                                         }
                                         KeyCode::Enter => {
                                             match app.toggle_drops_subscription() {
-                                                Ok((msg, should_refresh)) => {
+                                                Ok((msg, is_subscribe)) => {
                                                     logs.push(msg);
-                                                    if should_refresh {
+                                                    if is_subscribe {
                                                         // Fetch details for the newly subscribed game immediately
                                                         // We prefer background refresh to avoid full UI reload/blocking
                                                         let _ = app.refresh_data_background().await;

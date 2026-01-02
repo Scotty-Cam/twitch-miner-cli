@@ -2374,7 +2374,7 @@ dependencies = [
 
 [[package]]
 name = "twitch_miner_cli"
-version = "1.0.7"
+version = "1.0.1"
 dependencies = [
  "anyhow",
  "base64",
